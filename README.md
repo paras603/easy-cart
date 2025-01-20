@@ -35,7 +35,7 @@ Data source: single-user input
 
 (Komalpreet-Kaur2717)
 
-13. User can duplicate list.
-14. User can use 'clear all' button to clear the list.
-15. User can undo the latest action.
-16. User have a splash screen when starting the app.
+13. Users can duplicate list.
+14. Users can use 'clear all' button to clear the list.
+15. Users can undo the latest action.
+16. Users have a splash screen when starting the app.
