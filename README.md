@@ -27,7 +27,15 @@ Data source: single-user input
 8. User can set the priority level of the application.
 
 (Mandip Gurung)
+
 9. User can track the overall price of the shopping list.
 10. User have access to deleted list from trash.
 11. User can add item to favourite list.
 12. User have an in-app tutorial when using the app for the first time.
+
+(Komalpreet-Kaur2717)
+
+13. User can duplicate list.
+14. User can use 'clear all' button to clear the list.
+15. User can undo the latest action.
+16. User have a splash screen when starting the app.
