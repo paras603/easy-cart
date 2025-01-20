@@ -18,3 +18,10 @@ Data source: single-user input
 2. User can filter the list items according to asc, desc, date and alphabet.
 3. User can create mulitple list.
 4. User can mark list as purchased.
+
+(Roshan Budhathoki)
+
+5. User can create, read, update and delete list.
+6. User gets reminder or notification about list creation, shoping day etc.
+7. User can search with item name.
+8. User can set the priority level of the application.
