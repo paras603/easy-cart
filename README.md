@@ -11,3 +11,10 @@ Languages: Kotlin
 Data source: single-user input
 
 # features
+
+(paras603)
+
+1. User can export the list in pdf format.
+2. User can filter the list items according to asc, desc, date and alphabet.
+3. User can create mulitple list.
+4. User can mark list as purchased.
