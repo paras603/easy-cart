@@ -12,7 +12,7 @@ Data source: single-user input
 
 # features
 
-(paras603)
+(parasmani)
 
 1. User can export the list in pdf format.
 2. User can filter the list items according to asc, desc, date and alphabet.
