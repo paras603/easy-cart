@@ -20,6 +20,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, context
         val contentTextView: TextView = itemView.findViewById(R.id.contentTextView)
         val updateButton: ImageView = itemView.findViewById(R.id.updateListButton)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
+        val favButton: ImageView = itemView.findViewById(R.id.favButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListViewHolder {
@@ -47,6 +48,13 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, context
             refreshData(db.getAllLists())
             Toast.makeText(holder.itemView.context, "List Deleted", Toast.LENGTH_SHORT).show()
         }
+
+
+        holder.favButton.setOnClickListener {
+//            holder.favButton.isSelected = !holder.favButton.isSelected
+            Toast.makeText(holder.itemView.context, "Added to Favourite List", Toast.LENGTH_SHORT).show()
+        }
+
 
     }
 

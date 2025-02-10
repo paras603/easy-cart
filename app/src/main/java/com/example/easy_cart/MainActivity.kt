@@ -3,6 +3,7 @@ package com.example.easy_cart
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,7 +39,11 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "All lists cleared", Toast.LENGTH_SHORT).show()
         }
 
+
+
+
     }
+
 
     override fun onResume() {
         super.onResume()
