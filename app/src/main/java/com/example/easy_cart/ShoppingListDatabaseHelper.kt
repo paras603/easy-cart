@@ -83,4 +83,12 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
         return ShoppingList(id, title, content)
     }
 
+    fun deleteList(listId: Int){
+        val db = writableDatabase
+        val whereClause = "$COLUMN_ID = ?"
+        val whereArgs = arrayOf(listId.toString())
+        db.delete(TABLE_NAME, whereClause, whereArgs)
+        db.close()
+    }
+
 }

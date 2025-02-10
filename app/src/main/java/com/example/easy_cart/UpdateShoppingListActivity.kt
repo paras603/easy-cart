@@ -25,10 +25,11 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
         db = ShoppingListDatabaseHelper(this)
 
-        shoppingListId = intent.getIntExtra("list_id", -1)
+        shoppingListId = intent.getIntExtra("shopping_list_id", -1)
 
         Log.d("UpdateShoppingListActivity", "Received ID: $shoppingListId")
         if (shoppingListId == -1){
+            Log.d("abc", "shopping list id not found")
             finish()
             return
         }
