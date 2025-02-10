@@ -91,4 +91,11 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
         db.close()
     }
 
+    fun deleteAllLists() {
+        val db = writableDatabase
+        db.execSQL("DELETE FROM $TABLE_NAME") // Delete all rows
+        db.close()
+    }
+
+
 }

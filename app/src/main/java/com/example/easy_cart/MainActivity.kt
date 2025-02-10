@@ -3,6 +3,7 @@ package com.example.easy_cart
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,13 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, CreateShoppingListActivity::class.java)
             startActivity(intent)
         }
+
+        binding.clearAllButton.setOnClickListener {
+            db.deleteAllLists() // Clear all lists
+            shoppingListAdapter.refreshData(db.getAllLists()) // Refresh RecyclerView
+            Toast.makeText(this, "All lists cleared", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun onResume() {
