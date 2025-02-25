@@ -8,16 +8,37 @@
     android:padding="16dp"
     tools:context=".CreateShoppingListActivity">
 
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white"/>
+
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="6dp"/>
+
+    <!-- Heading (Add List) -->
     <TextView
         android:id="@+id/addListHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/backButton"
+        android:layout_alignTop="@id/backButton"
+        android:layout_marginStart="12dp"
         android:text="Add List"
         android:textColor="@color/black"
         android:textSize="24sp"/>
 
+    <!-- Save Button -->
     <ImageView
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
@@ -27,9 +48,10 @@
         android:layout_alignTop="@id/addListHeading"
         android:layout_marginEnd="6dp"/>
 
+    <!-- Title EditText -->
     <EditText
         android:id="@+id/titleEditText"
-        android:layout_width="373dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/addListHeading"
         android:layout_marginTop="16dp"
@@ -39,9 +61,10 @@
         android:padding="12dp"
         android:textSize="20sp" />
 
+    <!-- Content EditText -->
     <EditText
         android:id="@+id/contentEditText"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="562dp"
         android:layout_below="@id/titleEditText"
         android:layout_marginTop="22dp"
@@ -50,8 +73,5 @@
         android:hint="Enter the list"
         android:padding="12dp"
         android:textSize="18sp" />
-
-
-
 
 </RelativeLayout>

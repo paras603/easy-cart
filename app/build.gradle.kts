@@ -64,6 +64,10 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.9")
 
+    //splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
