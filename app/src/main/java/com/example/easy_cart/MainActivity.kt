@@ -53,8 +53,15 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "All lists cleared", Toast.LENGTH_SHORT).show()
         }
 
+        binding.trashButton.setOnClickListener {
+            val intent = Intent(this, TrashList::class.java)
+            startActivity(intent)
+        }
 
-
+        binding.favourite.setOnClickListener{
+            val intent = Intent(this, Fovourite::class.java)
+            startActivity(intent)
+        }
 
     }
 

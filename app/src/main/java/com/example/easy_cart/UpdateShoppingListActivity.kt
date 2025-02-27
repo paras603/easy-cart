@@ -41,7 +41,7 @@ class UpdateShoppingListActivity : AppCompatActivity() {
         binding.updateSaveButton.setOnClickListener {
             val newTitle = binding.updateTitleEditText.text.toString()
             val newContent = binding.updateContentEditText.text.toString()
-            val updatedShoppingList = ShoppingList(shoppingListId, newTitle, newContent)
+            val updatedShoppingList = ShoppingList(shoppingListId, newTitle, newContent, false, false);
             db.updateLists(updatedShoppingList)
             finish()
             Toast.makeText(this, "Changes Saved", Toast.LENGTH_SHORT).show()

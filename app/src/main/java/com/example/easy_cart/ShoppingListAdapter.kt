@@ -44,7 +44,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, context
         }
 
         holder.deleteButton.setOnClickListener {
-            db.deleteList(sList.id)
+            db.moveToTrash(sList.id)
             refreshData(db.getAllLists())
             Toast.makeText(holder.itemView.context, "List Deleted", Toast.LENGTH_SHORT).show()
         }
@@ -52,6 +52,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, context
 
         holder.favButton.setOnClickListener {
 //            holder.favButton.isSelected = !holder.favButton.isSelected
+            db.moveToFavorite(sList.id);
             Toast.makeText(holder.itemView.context, "Added to Favourite List", Toast.LENGTH_SHORT).show()
         }
 

@@ -32,7 +32,9 @@ class CreateShoppingListActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener{
             val title = binding.titleEditText.text.toString()
             val content = binding.contentEditText.text.toString()
-            val shoppingList = ShoppingList(0, title, content)
+            val deleted = false;
+            val favorite = false;
+            val shoppingList = ShoppingList(0, title, content, deleted, favorite)
             db.insertList(shoppingList)
             finish()
             Toast.makeText(this, "Shopping List Saved", Toast.LENGTH_SHORT).show()
