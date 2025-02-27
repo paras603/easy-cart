@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ✅ Storage Permissions for PDF Export -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,28 +17,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Easycart"
         tools:targetApi="31">
-        <activity
-            android:name=".Fovourite"
-            android:exported="false" />
-        <activity
-            android:name=".FovouriteList"
-            android:exported="false" />
-        <activity
-            android:name=".TrashList"
-            android:exported="false" />
-        <activity
-            android:name=".UpdateShoppingListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreateShoppingListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+
+        <!-- ✅ File Provider for Secure File Access -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+
+        <activity android:name=".Fovourite" android:exported="false" />
+        <activity android:name=".FovouriteList" android:exported="false" />
+        <activity android:name=".TrashList" android:exported="false" />
+        <activity android:name=".UpdateShoppingListActivity" android:exported="false" />
+        <activity android:name=".CreateShoppingListActivity" android:exported="false" />
+        <activity android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.App.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

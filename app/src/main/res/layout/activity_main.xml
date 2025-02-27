@@ -75,4 +75,14 @@
         android:layout_marginBottom="16dp"
         android:text="Clear All" />
 
+    <Button
+        android:id="@+id/exportAsPdf"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="260dp"
+        android:layout_marginEnd="14dp"
+        android:text="Export PDF" />
+
 </RelativeLayout>

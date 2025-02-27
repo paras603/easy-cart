@@ -9,9 +9,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
+import android.os.Environment
+import java.io.File
+import androidx.core.content.FileProvider
+import java.io.FileOutputStream
+import java.io.IOException
 import androidx.recyclerview.widget.RecyclerView
 
-class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, context: Context) : RecyclerView.Adapter<ShoppingListAdapter.ShoppingListViewHolder>() {
+class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private val context: Context) : RecyclerView.Adapter<ShoppingListAdapter.ShoppingListViewHolder>() {
 
     private  val db: ShoppingListDatabaseHelper = ShoppingListDatabaseHelper(context)
 
@@ -28,8 +35,79 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, context
         return ShoppingListViewHolder(view)
     }
 
+    fun exportToPDF () {
+
+        if (shoppingLists.isEmpty()) {
+            Toast.makeText(context, "No shopping lists to export!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val pdfDocument = PdfDocument()
+        val paint = Paint()
+        val pageWidth = 595 // A4 size width in pixels
+        val pageHeight = 842 // A4 size height in pixels
+
+        val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+
+        var yPos = 50f
+
+        paint.textSize = 18f
+        paint.isFakeBoldText = true
+        canvas.drawText("Shopping List", 200f, yPos, paint)
+
+        paint.textSize = 14f
+        paint.isFakeBoldText = false
+        yPos += 40f
+
+        for (shoppingList in shoppingLists) {
+            if (yPos > pageHeight - 50) { // Start new page if space runs out
+                pdfDocument.finishPage(page)
+                val newPageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
+                val newPage = pdfDocument.startPage(newPageInfo)
+                canvas.drawText("Shopping List (Continued)", 200f, 50f, paint)
+                yPos = 90f
+            }
+            canvas.drawText("• ${shoppingList.title}: ${shoppingList.content}", 50f, yPos, paint)
+            yPos += 30f
+        }
+
+        pdfDocument.finishPage(page)
+
+        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "EasyCart")
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+
+        val file = File(directory, "ShoppingList.pdf")
+        try {
+            val fos = FileOutputStream(file)
+            pdfDocument.writeTo(fos)
+            fos.close()
+            openPDF(file);
+            Toast.makeText(context, "PDF Exported: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error saving PDF", Toast.LENGTH_SHORT).show()
+        }
+
+        pdfDocument.close()
+    }
+
     override fun getItemCount(): Int = shoppingLists.size
 
+    private fun openPDF (file: File) {
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, "application/pdf")
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NO_HISTORY
+
+        try {
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "No PDF viewer found!", Toast.LENGTH_SHORT).show()
+        }
+    }
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
         val sList = shoppingLists[position]
         holder.titleTextView.text = sList.title

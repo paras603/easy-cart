@@ -63,6 +63,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.exportAsPdf.setOnClickListener{
+            shoppingListAdapter.exportToPDF();
+        }
+
     }
 
 
