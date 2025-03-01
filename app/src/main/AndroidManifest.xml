@@ -2,10 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <!-- ✅ Storage Permissions for PDF Export -->
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -30,7 +36,7 @@
         </provider>
 
         <activity android:name=".Fovourite" android:exported="false" />
-        <activity android:name=".FovouriteList" android:exported="false" />
+<!--        <activity android:name=".FovouriteList" android:exported="false" />-->
         <activity android:name=".TrashList" android:exported="false" />
         <activity android:name=".UpdateShoppingListActivity" android:exported="false" />
         <activity android:name=".CreateShoppingListActivity" android:exported="false" />
@@ -42,6 +48,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".ShoppingReminderReceiver"
+            android:exported="false" />
+
     </application>
 
 </manifest>

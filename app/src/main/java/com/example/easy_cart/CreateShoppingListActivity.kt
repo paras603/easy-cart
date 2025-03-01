@@ -1,5 +1,6 @@
 package com.example.easy_cart
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -11,11 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.example.easy_cart.databinding.ActivityCreateShoppingListBinding
+import java.util.Calendar
 
 class CreateShoppingListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateShoppingListBinding
     private lateinit var db: ShoppingListDatabaseHelper
+    private lateinit var dateEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,13 +35,38 @@ class CreateShoppingListActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener{
             val title = binding.titleEditText.text.toString()
             val content = binding.contentEditText.text.toString()
+            val shoppingDate = binding.dateEditText.text.toString()
             val deleted = false;
             val favorite = false;
-            val shoppingList = ShoppingList(0, title, content, deleted, favorite)
+            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite)
             db.insertList(shoppingList)
             finish()
             Toast.makeText(this, "Shopping List Saved", Toast.LENGTH_SHORT).show()
         }
+
+        dateEditText = findViewById(R.id.dateEditText)
+
+        dateEditText.setOnClickListener {
+            showDatePickerDialog()
+        }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                // Format selected date and display in EditText
+                val formattedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+                dateEditText.setText(formattedDate)
+            },
+            year, month, day
+        )
+        datePickerDialog.show()
     }
 
     // Handle the back button press in the Toolbar

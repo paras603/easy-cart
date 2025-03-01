@@ -65,7 +65,7 @@
     <EditText
         android:id="@+id/contentEditText"
         android:layout_width="match_parent"
-        android:layout_height="562dp"
+        android:layout_height="362dp"
         android:layout_below="@id/titleEditText"
         android:layout_marginTop="22dp"
         android:background="@color/white"
@@ -73,5 +73,20 @@
         android:hint="Enter the list"
         android:padding="12dp"
         android:textSize="18sp" />
+
+    <!-- Date Picker EditText -->
+    <EditText
+        android:id="@+id/dateEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contentEditText"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:hint="Select shopping date"
+        android:padding="12dp"
+        android:textSize="18sp"
+        android:focusable="false"
+        android:clickable="true"/>
+
 
 </RelativeLayout>
