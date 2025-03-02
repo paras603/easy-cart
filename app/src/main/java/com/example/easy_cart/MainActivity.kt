@@ -2,6 +2,9 @@ package com.example.easy_cart
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
@@ -67,6 +70,26 @@ class MainActivity : AppCompatActivity() {
             shoppingListAdapter.exportToPDF();
         }
 
+        binding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                shoppingListAdapter.filterList(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        binding.searchBar.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableEnd = binding.searchBar.compoundDrawablesRelative[2] // Get drawableEnd
+                if (drawableEnd != null && event.rawX >= (binding.searchBar.right - drawableEnd.bounds.width() - 20)) {
+                    shoppingListAdapter.toggleSortOrder()
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
     }
 
 

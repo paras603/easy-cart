@@ -12,17 +12,34 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
-        android:text="ShoppingList"
         android:layout_marginStart="18dp"
+        android:text="Shopping List"
         android:textColor="@color/black"
         android:textSize="24sp"/>
+
+    <!-- Search Bar -->
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/shoppingListHeading"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="Search..."
+        android:padding="10dp"
+        android:background="@android:drawable/edit_text"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawableEnd="@android:drawable/ic_menu_sort_by_size"
+        android:textSize="16sp"/>
 
     <!-- RecyclerView to show shopping lists -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shoppingListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_below="@id/searchBar"
+        android:layout_marginTop="10dp"
         android:padding="16dp"/>
 
     <!-- Add Button -->
@@ -51,6 +68,7 @@
         android:tint="@color/white"
         android:backgroundTint="@color/white"/>
 
+    <!-- Favourite Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/favourite"
         android:layout_width="wrap_content"
@@ -71,10 +89,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Clear All" />
+        android:text="Clear All"/>
 
+    <!-- Export as PDF Button -->
     <Button
         android:id="@+id/exportAsPdf"
         android:layout_width="137dp"
@@ -83,6 +101,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="260dp"
         android:layout_marginEnd="14dp"
-        android:text="Export PDF" />
+        android:text="Export PDF"/>
 
 </RelativeLayout>

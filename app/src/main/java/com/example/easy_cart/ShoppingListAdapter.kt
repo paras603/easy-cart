@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private val context: Context) : RecyclerView.Adapter<ShoppingListAdapter.ShoppingListViewHolder>() {
 
     private  val db: ShoppingListDatabaseHelper = ShoppingListDatabaseHelper(context)
+    private var isAscending = true  // Track sorting order
 
     class ShoppingListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.shoppingTitleTextView)
@@ -141,5 +142,23 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
         shoppingLists = newShoppingLists
         notifyDataSetChanged()
     }
+
+    fun filterList(query: String) {
+        val filteredList = db.getAllLists().filter {
+            it.title.contains(query, ignoreCase = true) || it.content.contains(query, ignoreCase = true)
+        }
+        this.refreshData(filteredList)
+    }
+
+    fun toggleSortOrder() {
+        isAscending = !isAscending
+        val sortedList = if (isAscending) {
+            shoppingLists.sortedBy { it.title }
+        } else {
+            shoppingLists.sortedByDescending { it.title }
+        }
+        refreshData(sortedList)
+    }
+
 
 }
