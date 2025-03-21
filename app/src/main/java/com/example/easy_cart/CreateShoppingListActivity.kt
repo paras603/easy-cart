@@ -36,6 +36,23 @@ class CreateShoppingListActivity : AppCompatActivity() {
             val title = binding.titleEditText.text.toString()
             val content = binding.contentEditText.text.toString()
             val shoppingDate = binding.dateEditText.text.toString()
+
+            //validate inputs
+            if (title.isEmpty()){
+                Toast.makeText(this, "Title can not be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (content.isEmpty()){
+                Toast.makeText(this,"Content can not be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (shoppingDate.isEmpty()){
+                Toast.makeText(this, "Date can not be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val deleted = false;
             val favorite = false;
             val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite)
