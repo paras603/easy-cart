@@ -28,6 +28,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
         val contentTextView: TextView = itemView.findViewById(R.id.contentTextView)
         val updateButton: ImageView = itemView.findViewById(R.id.updateListButton)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
+        val copyButton: ImageView = itemView.findViewById(R.id.copyButton)
         val favButton: ImageView = itemView.findViewById(R.id.favButton)
     }
 
@@ -126,6 +127,18 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
             db.moveToTrash(sList.id)
             refreshData(db.getAllLists())
             Toast.makeText(holder.itemView.context, "List Deleted", Toast.LENGTH_SHORT).show()
+        }
+
+        holder.copyButton.setOnClickListener{
+            val title = sList.title + "Copy"
+            val content = sList.content
+            val shoppingDate = sList.shoppingDate
+            val deleted = false;
+            val favorite = false;
+            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite)
+            db.insertList(shoppingList)
+            refreshData(db.getAllLists())
+            Toast.makeText(holder.itemView.context, "List Duplicated", Toast.LENGTH_SHORT).show()
         }
 
 
