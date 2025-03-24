@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/shoppingListHeading"
         android:layout_width="wrap_content"
@@ -102,5 +108,17 @@
         android:layout_marginStart="260dp"
         android:layout_marginEnd="14dp"
         android:text="Export PDF"/>
+
+    <Button
+        android:id="@+id/startTutorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/clearAllButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="614dp"
+        android:layout_marginEnd="280dp"
+        android:layout_marginBottom="6dp"
+        android:text="Start Tutorial" />
 
 </RelativeLayout>
