@@ -65,6 +65,27 @@
         android:focusable="false"
         android:clickable="true"/>
 
+    <RadioGroup
+        android:id="@+id/priorityRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateDateEditText"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/lowPriorityRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low" />
+
+        <RadioButton
+            android:id="@+id/highPriorityRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High" />
+
+    </RadioGroup>
+
 
 
 

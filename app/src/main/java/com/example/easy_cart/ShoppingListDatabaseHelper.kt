@@ -9,16 +9,18 @@ import androidx.core.database.getStringOrNull
 class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object{
         private const val DATABASE_NAME = "shoppinglist.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
         private const val TABLE_NAME = "alllist"
         private const val COLUMN_ID = "id"
         private const val COLUMN_TITLE = "title"
         private const val COLUMN_CONTENT = "content"
         private const val COLUMN_DATE = "shopping_date"
+        private const val COLUMN_PRIORITY = "priority"
+
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_CONTENT TEXT, $COLUMN_DATE TEXT, deleted INTEGER DEFAULT 0, favorite INTEGER DEFAULT 0)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_CONTENT TEXT, $COLUMN_DATE TEXT, deleted INTEGER DEFAULT 0, favorite INTEGER DEFAULT 0, $COLUMN_PRIORITY TEXT)"
         db?.execSQL(createTableQuery)
     }
 
@@ -36,6 +38,7 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
             put(COLUMN_DATE, shoppingList.shoppingDate)
             put("deleted", if (shoppingList.deleted) 1 else 0)
             put("favorite", if (shoppingList.favorite) 1 else 0)
+            put(COLUMN_PRIORITY, shoppingList.priority)
         }
         db.insert(TABLE_NAME, null, values)
         db.close()
@@ -54,7 +57,8 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
             val shoppingDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE))
             val deleted = cursor.getInt(cursor.getColumnIndexOrThrow("deleted")) == 1
             val favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorite")) == 1
-            val sList = ShoppingList(id, title, content,shoppingDate, deleted, favorite)
+            val priority = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRIORITY))
+            val sList = ShoppingList(id, title, content,shoppingDate, deleted, favorite, priority)
             shoppingList.add(sList)
         }
         cursor.close()
@@ -75,7 +79,8 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
             val shoppingDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE))
             val deleted = cursor.getInt(cursor.getColumnIndexOrThrow("deleted")) == 1
             val favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorite")) == 1
-            val sList = ShoppingList(id, title, content, shoppingDate, deleted, favorite)
+            val priority = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRIORITY))
+            val sList = ShoppingList(id, title, content, shoppingDate, deleted, favorite, priority)
             shoppingList.add(sList)
         }
         cursor.close()
@@ -96,7 +101,8 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
             val shoppingDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE))
             val deleted = cursor.getInt(cursor.getColumnIndexOrThrow("deleted")) == 1
             val favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorite")) == 1
-            val sList = ShoppingList(id, title, content, shoppingDate, deleted, favorite)
+            val priority = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRIORITY))
+            val sList = ShoppingList(id, title, content, shoppingDate, deleted, favorite, priority)
             shoppingList.add(sList)
         }
         cursor.close()
@@ -112,6 +118,7 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
             put(COLUMN_DATE, shoppingList.shoppingDate)
             put("deleted", if (shoppingList.deleted) 1 else 0)
             put("favorite", if (shoppingList.favorite) 1 else 0)
+            put(COLUMN_PRIORITY, shoppingList.priority)
         }
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(shoppingList.id.toString())
@@ -131,9 +138,10 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
         val shoppingDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE))
         val deleted = cursor.getInt(cursor.getColumnIndexOrThrow("deleted")) == 1
         val favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorite")) == 1
+        val priority = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRIORITY))
         cursor.close()
         db.close()
-        return ShoppingList(id, title, content, shoppingDate, deleted, favorite);
+        return ShoppingList(id, title, content, shoppingDate, deleted, favorite, priority);
     }
 
     fun deleteList (listId: Int){

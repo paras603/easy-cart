@@ -26,6 +26,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
     class ShoppingListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.shoppingTitleTextView)
         val contentTextView: TextView = itemView.findViewById(R.id.contentTextView)
+        val priorityTextView: TextView = itemView.findViewById(R.id.priorityTextView)
         val updateButton: ImageView = itemView.findViewById(R.id.updateListButton)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
         val copyButton: ImageView = itemView.findViewById(R.id.copyButton)
@@ -115,6 +116,17 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
         holder.titleTextView.text = sList.title
         holder.contentTextView.text = sList.content
 
+
+
+        // Set priority dynamically
+        if (sList.priority == "High") {
+            holder.priorityTextView.text = "High"
+//            holder.priorityIcon.setImageResource(R.drawable.baseline_notification_important_24) // Red icon
+        } else {
+            holder.priorityTextView.text = "Low"
+//            holder.priorityIcon.setImageResource(R.drawable.baseline_priority_low_24) // Grey icon
+        }
+
         holder.updateButton.setOnClickListener {
             val intent = Intent(holder.itemView.context, UpdateShoppingListActivity::class.java).apply {
                 putExtra("shopping_list_id", sList.id)
@@ -135,7 +147,8 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
             val shoppingDate = sList.shoppingDate
             val deleted = false;
             val favorite = false;
-            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite)
+            val priority = sList.priority
+            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite, priority)
             db.insertList(shoppingList)
             refreshData(db.getAllLists())
             Toast.makeText(holder.itemView.context, "List Duplicated", Toast.LENGTH_SHORT).show()

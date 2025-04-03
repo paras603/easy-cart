@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import android.provider.Settings
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.core.app.NotificationManagerCompat
 import java.util.Date
 
@@ -31,6 +33,7 @@ class UpdateShoppingListActivity : AppCompatActivity() {
     private lateinit var db: ShoppingListDatabaseHelper
     private var shoppingListId: Int = -1
     private val calendar = Calendar.getInstance()
+    private lateinit var priorityRadioGroup: RadioGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,15 @@ class UpdateShoppingListActivity : AppCompatActivity() {
         binding.updateContentEditText.setText(sList.content)
         binding.updateDateEditText.setText(sList.shoppingDate)
 
+        // Initialize the priorityRadioGroup
+        priorityRadioGroup = binding.priorityRadioGroup
+
+        // Set previously selected priority
+        when (sList.priority) {
+            "Low" -> binding.lowPriorityRadioButton.isChecked = true
+            "High" -> binding.highPriorityRadioButton.isChecked = true
+        }
+
         // Open Date Picker when clicking on Date EditText
         binding.updateDateEditText.setOnClickListener {
             showDatePicker()
@@ -64,24 +76,35 @@ class UpdateShoppingListActivity : AppCompatActivity() {
             val newContent = binding.updateContentEditText.text.toString()
             val shoppingDate = binding.updateDateEditText.text.toString()
 
+            // Get selected priority
+            val selectedPriorityId = binding.priorityRadioGroup.checkedRadioButtonId
+            if (selectedPriorityId == -1) {
+                Toast.makeText(this, "Please select a priority level", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val selectedPriority = findViewById<RadioButton>(selectedPriorityId).text.toString()
+
+
+
             // Convert shoppingDate to milliseconds (long)
             val shoppingDateInMillis = convertToMillis(shoppingDate)
 
             // Schedule reminder for the updated shopping date
             scheduleShoppingReminder(this, shoppingDateInMillis)
 
-            // Test the alarm by setting a reminder 1 minute from now
-            val testTime = System.currentTimeMillis() + 10000 // 30 sec from now
-            scheduleShoppingReminder(this, testTime)
-
             // Update the shopping list in the database
-            val updatedShoppingList = ShoppingList(shoppingListId, newTitle, newContent, shoppingDate, false, false)
+            val updatedShoppingList = ShoppingList(
+                shoppingListId, newTitle, newContent, shoppingDate, false, false, selectedPriority
+            )
+
             db.updateLists(updatedShoppingList)
 
             Toast.makeText(this, "Changes Saved", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
+
 
 
     private fun showDatePicker() {

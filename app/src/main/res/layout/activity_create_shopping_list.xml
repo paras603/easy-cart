@@ -88,5 +88,32 @@
         android:focusable="false"
         android:clickable="true"/>
 
+    <!-- Priority Level (Radio Group) -->
+    <RadioGroup
+        android:id="@+id/priorityRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dateEditText"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <!-- High Priority -->
+        <RadioButton
+            android:id="@+id/highPriorityRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High"
+            android:textSize="18sp" />
+
+        <!-- Low Priority -->
+        <RadioButton
+            android:id="@+id/lowPriorityRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Low"
+            android:textSize="18sp" />
+    </RadioGroup>
+
 
 </RelativeLayout>

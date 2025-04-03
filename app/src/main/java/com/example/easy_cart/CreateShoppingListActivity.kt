@@ -2,15 +2,11 @@ package com.example.easy_cart
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import com.example.easy_cart.databinding.ActivityCreateShoppingListBinding
 import java.util.Calendar
 
@@ -19,6 +15,7 @@ class CreateShoppingListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateShoppingListBinding
     private lateinit var db: ShoppingListDatabaseHelper
     private lateinit var dateEditText: EditText
+    private lateinit var priorityRadioGroup: RadioGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,39 +29,49 @@ class CreateShoppingListActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // Enable the back button
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        binding.saveButton.setOnClickListener{
+        // Initialize views
+        dateEditText = findViewById(R.id.dateEditText)
+        priorityRadioGroup = findViewById(R.id.priorityRadioGroup)
+
+        // Date picker dialog
+        dateEditText.setOnClickListener {
+            showDatePickerDialog()
+        }
+
+        binding.saveButton.setOnClickListener {
             val title = binding.titleEditText.text.toString()
             val content = binding.contentEditText.text.toString()
             val shoppingDate = binding.dateEditText.text.toString()
 
-            //validate inputs
-            if (title.isEmpty()){
-                Toast.makeText(this, "Title can not be empty", Toast.LENGTH_SHORT).show()
+            // Validate inputs
+            if (title.isEmpty()) {
+                Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (content.isEmpty()) {
+                Toast.makeText(this, "Content cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (shoppingDate.isEmpty()) {
+                Toast.makeText(this, "Date cannot be empty", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (content.isEmpty()){
-                Toast.makeText(this,"Content can not be empty", Toast.LENGTH_SHORT).show()
+            // Get selected priority
+            val selectedPriorityId = priorityRadioGroup.checkedRadioButtonId
+            if (selectedPriorityId == -1) {
+                Toast.makeText(this, "Please select a priority level", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (shoppingDate.isEmpty()){
-                Toast.makeText(this, "Date can not be empty", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            val selectedPriority = findViewById<RadioButton>(selectedPriorityId).text.toString()
 
-            val deleted = false;
-            val favorite = false;
-            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite)
+            val deleted = false
+            val favorite = false
+            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite, selectedPriority)
             db.insertList(shoppingList)
             finish()
             Toast.makeText(this, "Shopping List Saved", Toast.LENGTH_SHORT).show()
-        }
-
-        dateEditText = findViewById(R.id.dateEditText)
-
-        dateEditText.setOnClickListener {
-            showDatePickerDialog()
         }
     }
 
@@ -77,7 +84,6 @@ class CreateShoppingListActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             { _, selectedYear, selectedMonth, selectedDay ->
-                // Format selected date and display in EditText
                 val formattedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
                 dateEditText.setText(formattedDate)
             },
@@ -87,7 +93,7 @@ class CreateShoppingListActivity : AppCompatActivity() {
     }
 
     // Handle the back button press in the Toolbar
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 finish() // Closes the activity and goes back to MainActivity
@@ -96,6 +102,4 @@ class CreateShoppingListActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
 }
