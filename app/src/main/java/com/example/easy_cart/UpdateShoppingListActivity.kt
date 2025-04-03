@@ -1,37 +1,29 @@
 package com.example.easy_cart
 
-import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.PendingIntent
-import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.easy_cart.databinding.ActivityCreateShoppingListBinding
-import com.example.easy_cart.databinding.ActivityUpdateShoppingListBinding
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 import android.provider.Settings
+import android.util.Log
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
-import java.util.Date
-
+import com.example.easy_cart.databinding.ActivityUpdateShoppingListBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class UpdateShoppingListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUpdateShoppingListBinding
     private lateinit var db: ShoppingListDatabaseHelper
     private var shoppingListId: Int = -1
+    private lateinit var originalShoppingList: ShoppingList
     private val calendar = Calendar.getInstance()
     private lateinit var priorityRadioGroup: RadioGroup
 
@@ -52,6 +44,11 @@ class UpdateShoppingListActivity : AppCompatActivity() {
         }
 
         val sList = db.getListByID(shoppingListId)
+
+        // Save the original shopping list for undo functionality
+        originalShoppingList = sList
+
+        // Populate the UI with the current shopping list data
         binding.updateTitleEditText.setText(sList.title)
         binding.updateContentEditText.setText(sList.content)
         binding.updateDateEditText.setText(sList.shoppingDate)
@@ -85,8 +82,6 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
             val selectedPriority = findViewById<RadioButton>(selectedPriorityId).text.toString()
 
-
-
             // Convert shoppingDate to milliseconds (long)
             val shoppingDateInMillis = convertToMillis(shoppingDate)
 
@@ -103,9 +98,12 @@ class UpdateShoppingListActivity : AppCompatActivity() {
             Toast.makeText(this, "Changes Saved", Toast.LENGTH_SHORT).show()
             finish()
         }
+
+        // Add undo button functionality
+        binding.undoButton.setOnClickListener {
+            revertChanges()
+        }
     }
-
-
 
     private fun showDatePicker() {
         val datePicker = DatePickerDialog(
@@ -129,29 +127,6 @@ class UpdateShoppingListActivity : AppCompatActivity() {
         val date = dateFormat.parse(dateString)
         return date?.time ?: System.currentTimeMillis() // If parsing fails, use current time as fallback
     }
-
-    //code that sets alarm according to user provided date
-    // Schedule the shopping reminder at the provided shopping date (in milliseconds)
-//    fun scheduleShoppingReminder(context: Context, shoppingDate: Long) {
-//        // Check if the app has permission to schedule exact alarms on Android 12 and above
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            val isPermissionGranted = (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
-//            if (!isPermissionGranted) {
-//                // Prompt user to go to settings to grant permission for exact alarms
-//                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-//                context.startActivity(intent)
-//                return // Don't proceed with scheduling alarm until permission is granted
-//            }
-//        }
-//
-//        // Proceed with setting the alarm after permission check
-//        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        val intent = Intent(context, ShoppingReminderReceiver::class.java)
-//        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-//
-//        // Set the alarm to trigger at the shopping date time
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, shoppingDate, pendingIntent)
-//    }
 
     //code to check if reminder works
     // Schedule the shopping reminder at the provided shopping date (in milliseconds)
@@ -194,5 +169,47 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
     }
 
+    private fun revertChanges() {
+        // Revert the UI to the original values
+        binding.updateTitleEditText.setText(originalShoppingList.title)
+        binding.updateContentEditText.setText(originalShoppingList.content)
+        binding.updateDateEditText.setText(originalShoppingList.shoppingDate)
 
+        // Restore the original priority
+        when (originalShoppingList.priority) {
+            "Low" -> binding.lowPriorityRadioButton.isChecked = true
+            "High" -> binding.highPriorityRadioButton.isChecked = true
+            else -> binding.lowPriorityRadioButton.isChecked = false
+        }
+
+        // Notify user of the undo action
+        Toast.makeText(this, "Changes undone", Toast.LENGTH_SHORT).show()
+    }
 }
+
+
+
+
+
+//code that sets alarm according to user provided date
+// Schedule the shopping reminder at the provided shopping date (in milliseconds)
+//    fun scheduleShoppingReminder(context: Context, shoppingDate: Long) {
+//        // Check if the app has permission to schedule exact alarms on Android 12 and above
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            val isPermissionGranted = (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
+//            if (!isPermissionGranted) {
+//                // Prompt user to go to settings to grant permission for exact alarms
+//                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+//                context.startActivity(intent)
+//                return // Don't proceed with scheduling alarm until permission is granted
+//            }
+//        }
+//
+//        // Proceed with setting the alarm after permission check
+//        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        val intent = Intent(context, ShoppingReminderReceiver::class.java)
+//        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+//
+//        // Set the alarm to trigger at the shopping date time
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, shoppingDate, pendingIntent)
+//    }

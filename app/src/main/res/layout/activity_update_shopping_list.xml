@@ -18,6 +18,16 @@
         android:textColor="@color/black"
         android:textSize="24sp"/>
 
+    <!-- Undo Button -->
+    <ImageView
+        android:id="@+id/undoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_undo_24"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/editListHeading"
+        android:layout_marginEnd="56dp"/>
+
     <ImageView
         android:id="@+id/updateSaveButton"
         android:layout_width="wrap_content"
