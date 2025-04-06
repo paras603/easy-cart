@@ -36,13 +36,13 @@ class TrashListAdapter(private var shoppingLists: List<ShoppingList>, context: C
         holder.contentTextView.text = sList.content
 
         holder.restoreButton.setOnClickListener {
-            db.restoreFromTrash(sList.id) // Restore item
+            db.restoreFromTrash(sList.id.toInt()) // Restore item
             refreshData(db.getAllTrashLists()) // Refresh data
             Toast.makeText(holder.itemView.context, "List Restored", Toast.LENGTH_SHORT).show()
         }
 
         holder.deleteButton.setOnClickListener {
-            db.deleteList(sList.id) // Delete permanently
+            db.deleteList(sList.id.toInt()) // Delete permanently
             refreshData(db.getAllTrashLists())
             Toast.makeText(holder.itemView.context, "List Deleted Permanently", Toast.LENGTH_SHORT).show()
         }

@@ -2,6 +2,7 @@ package com.example.easy_cart
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easy_cart.databinding.ActivityCreateShoppingListBinding
 import java.util.Calendar
+import java.util.UUID
 
 class CreateShoppingListActivity : AppCompatActivity() {
 
@@ -16,6 +18,7 @@ class CreateShoppingListActivity : AppCompatActivity() {
     private lateinit var db: ShoppingListDatabaseHelper
     private lateinit var dateEditText: EditText
     private lateinit var priorityRadioGroup: RadioGroup
+    private lateinit var alreadyPurchased: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,7 @@ class CreateShoppingListActivity : AppCompatActivity() {
         // Initialize views
         dateEditText = findViewById(R.id.dateEditText)
         priorityRadioGroup = findViewById(R.id.priorityRadioGroup)
+        alreadyPurchased = findViewById(R.id.purchaseCheckBox)
 
         // Date picker dialog
         dateEditText.setOnClickListener {
@@ -65,10 +69,13 @@ class CreateShoppingListActivity : AppCompatActivity() {
             }
 
             val selectedPriority = findViewById<RadioButton>(selectedPriorityId).text.toString()
-
+            val isPurchased = alreadyPurchased.isChecked;
             val deleted = false
             val favorite = false
-            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite, selectedPriority)
+            val id = UUID.randomUUID().toString()
+            val shoppingList = ShoppingList(id, title, content, shoppingDate, deleted, favorite, selectedPriority,
+                isPurchased
+            )
             db.insertList(shoppingList)
             finish()
             Toast.makeText(this, "Shopping List Saved", Toast.LENGTH_SHORT).show()

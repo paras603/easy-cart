@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -22,10 +23,11 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUpdateShoppingListBinding
     private lateinit var db: ShoppingListDatabaseHelper
-    private var shoppingListId: Int = -1
+    private var shoppingListId: String = "-1"
     private lateinit var originalShoppingList: ShoppingList
     private val calendar = Calendar.getInstance()
     private lateinit var priorityRadioGroup: RadioGroup
+    private lateinit var alreadyPurchased: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +37,9 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
         db = ShoppingListDatabaseHelper(this)
 
-        shoppingListId = intent.getIntExtra("shopping_list_id", -1)
+        shoppingListId = intent.getStringExtra("shopping_list_id").toString()
         Log.d("UpdateShoppingListActivity", "Received ID: $shoppingListId")
-        if (shoppingListId == -1) {
+        if (shoppingListId == "-1") {
             Log.d("UpdateShoppingListActivity", "Shopping list id not found")
             finish()
             return
@@ -55,6 +57,8 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
         // Initialize the priorityRadioGroup
         priorityRadioGroup = binding.priorityRadioGroup
+        alreadyPurchased = binding.checkBox
+
 
         // Set previously selected priority
         when (sList.priority) {
@@ -62,10 +66,13 @@ class UpdateShoppingListActivity : AppCompatActivity() {
             "High" -> binding.highPriorityRadioButton.isChecked = true
         }
 
+        binding.checkBox.isChecked = sList.isPurchased;
+
         // Open Date Picker when clicking on Date EditText
         binding.updateDateEditText.setOnClickListener {
             showDatePicker()
         }
+        Log.d("UpdateShoppingListActivity", "Purchase ID before: ${alreadyPurchased.isChecked}")
 
         // Save Updated Data and schedule reminder
         binding.updateSaveButton.setOnClickListener {
@@ -81,6 +88,10 @@ class UpdateShoppingListActivity : AppCompatActivity() {
             }
 
             val selectedPriority = findViewById<RadioButton>(selectedPriorityId).text.toString()
+            val isPurchased = binding.checkBox.isChecked
+
+            Log.d("UpdateShoppingListActivity", "Purchase ID: $isPurchased")
+
 
             // Convert shoppingDate to milliseconds (long)
             val shoppingDateInMillis = convertToMillis(shoppingDate)
@@ -90,10 +101,13 @@ class UpdateShoppingListActivity : AppCompatActivity() {
 
             // Update the shopping list in the database
             val updatedShoppingList = ShoppingList(
-                shoppingListId, newTitle, newContent, shoppingDate, false, false, selectedPriority
+                shoppingListId.toString(), newTitle, newContent, shoppingDate, false, false, selectedPriority, isPurchased
             )
 
             db.updateLists(updatedShoppingList)
+
+            Log.d("UpdateShoppingListActivity", "Purchase Data: $updatedShoppingList")
+
 
             Toast.makeText(this, "Changes Saved", Toast.LENGTH_SHORT).show()
             finish()

@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
             System.currentTimeMillis() < startTime + 1000
         }
 
-
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

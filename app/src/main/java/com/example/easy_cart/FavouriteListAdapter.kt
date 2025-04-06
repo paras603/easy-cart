@@ -36,7 +36,7 @@ class FavouriteListAdapter(private var shoppingLists: List<ShoppingList>, contex
         holder.contentTextView.text = sList.content
 
         holder.deleteButton.setOnClickListener {
-            db.moveToTrash(sList.id) // Delete permanently
+            db.moveToTrash(sList.id.toInt()) // Delete permanently
             refreshData(db.getAllTrashLists())
             Toast.makeText(holder.itemView.context, "List Deleted Permanently", Toast.LENGTH_SHORT).show()
         }

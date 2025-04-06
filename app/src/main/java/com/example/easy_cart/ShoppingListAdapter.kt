@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider
 import java.io.FileOutputStream
 import java.io.IOException
 import androidx.recyclerview.widget.RecyclerView
+import java.util.UUID
 
 class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private val context: Context) : RecyclerView.Adapter<ShoppingListAdapter.ShoppingListViewHolder>() {
 
@@ -31,6 +32,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
         val copyButton: ImageView = itemView.findViewById(R.id.copyButton)
         val favButton: ImageView = itemView.findViewById(R.id.favButton)
+        val isPurchase: TextView = itemView.findViewById(R.id.purchaseText)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListViewHolder {
@@ -117,7 +119,6 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
         holder.contentTextView.text = sList.content
 
 
-
         // Set priority dynamically
         if (sList.priority == "High") {
             holder.priorityTextView.text = "High"
@@ -127,16 +128,22 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
 //            holder.priorityIcon.setImageResource(R.drawable.baseline_priority_low_24) // Grey icon
         }
 
+        if(sList.isPurchased){
+            holder.isPurchase.text = "Already Purchased"
+        }else{
+            holder.isPurchase.text = ""
+        }
+
         holder.updateButton.setOnClickListener {
             val intent = Intent(holder.itemView.context, UpdateShoppingListActivity::class.java).apply {
-                putExtra("shopping_list_id", sList.id)
+                putExtra("shopping_list_id", sList.id.toString())
             }
             Log.d("intent_value", sList.toString())
             holder.itemView.context.startActivity(intent)
         }
 
         holder.deleteButton.setOnClickListener {
-            db.moveToTrash(sList.id)
+            db.moveToTrash(sList.id.toInt())
             refreshData(db.getAllLists())
             Toast.makeText(holder.itemView.context, "List Deleted", Toast.LENGTH_SHORT).show()
         }
@@ -148,7 +155,9 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
             val deleted = false;
             val favorite = false;
             val priority = sList.priority
-            val shoppingList = ShoppingList(0, title, content, shoppingDate, deleted, favorite, priority)
+            val isPurchased = sList.isPurchased
+            val id = UUID.randomUUID().toString();
+            val shoppingList = ShoppingList(id, title, content, shoppingDate, deleted, favorite, priority, isPurchased)
             db.insertList(shoppingList)
             refreshData(db.getAllLists())
             Toast.makeText(holder.itemView.context, "List Duplicated", Toast.LENGTH_SHORT).show()
@@ -157,7 +166,7 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
 
         holder.favButton.setOnClickListener {
 //            holder.favButton.isSelected = !holder.favButton.isSelected
-            db.moveToFavorite(sList.id);
+            db.moveToFavorite(sList.id.toInt());
             Toast.makeText(holder.itemView.context, "Added to Favourite List", Toast.LENGTH_SHORT).show()
         }
 
