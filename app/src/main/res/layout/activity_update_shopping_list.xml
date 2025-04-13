@@ -1,114 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:fitsSystemWindows="true"
     tools:context=".UpdateShoppingListActivity">
 
+    <!-- Toolbar/Header Section -->
     <TextView
         android:id="@+id/editListHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
         android:text="Edit List"
         android:textColor="@color/black"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"/>
 
-    <!-- Undo Button -->
     <ImageView
         android:id="@+id/undoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_undo_24"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/editListHeading"
-        android:layout_marginEnd="56dp"/>
+        android:contentDescription="Undo"
+        app:layout_constraintTop_toTopOf="@id/editListHeading"
+        app:layout_constraintEnd_toStartOf="@id/updateSaveButton"
+        android:layout_marginEnd="8dp"/>
 
     <ImageView
         android:id="@+id/updateSaveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_done_24"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/editListHeading"
-        android:layout_marginEnd="6dp"/>
+        android:contentDescription="Save"
+        app:layout_constraintTop_toTopOf="@id/undoButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"/>
 
-    <EditText
-        android:id="@+id/updateTitleEditText"
-        android:layout_width="373dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editListHeading"
-        android:layout_marginTop="16dp"
-        android:background="@color/white"
-        android:hint="Enter the title"
-        android:maxLines="1"
-        android:padding="12dp"
-        android:textSize="20sp" />
+    <!-- Scrollable Form Section -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/editListHeading"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
 
-    <EditText
-        android:id="@+id/updateContentEditText"
-        android:layout_width="370dp"
-        android:layout_height="362dp"
-        android:layout_below="@id/updateTitleEditText"
-        android:layout_marginTop="22dp"
-        android:background="@color/white"
-        android:gravity="top"
-        android:hint="Enter the list"
-        android:padding="12dp"
-        android:textSize="18sp" />
-
-    <!-- Date Picker EditText -->
-    <EditText
-        android:id="@+id/updateDateEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/updateContentEditText"
-        android:layout_marginTop="16dp"
-        android:background="@color/white"
-        android:hint="Select shopping date"
-        android:padding="12dp"
-        android:textSize="18sp"
-        android:focusable="false"
-        android:clickable="true"/>
-
-    <RadioGroup
-        android:id="@+id/priorityRadioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/updateDateEditText"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/lowPriorityRadioButton"
-            android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Low" />
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp">
 
-        <RadioButton
-            android:id="@+id/highPriorityRadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="High" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-    </RadioGroup>
+                <!-- Title Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter the title">
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="124dp"
-        android:layout_height="57dp"
-        android:layout_below="@+id/updateDateEditText"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="107dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="27dp"
-        android:layout_marginBottom="78dp"
-        android:layout_toEndOf="@+id/priorityRadioGroup"
-        android:text="Already Purchased" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/updateTitleEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Content Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter the list"
+                    android:layout_marginTop="8dp">
 
-</RelativeLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/updateContentEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:textSize="16sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Date Picker -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select shopping date"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/updateDateEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textSize="16sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Priority and Purchase Checkbox -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <RadioGroup
+                        android:id="@+id/priorityRadioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/highPriorityRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="High"
+                            android:textSize="16sp"/>
+
+                        <RadioButton
+                            android:id="@+id/lowPriorityRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:text="Low"
+                            android:textSize="16sp"/>
+                    </RadioGroup>
+
+                    <CheckBox
+                        android:id="@+id/checkBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Already Purchased"
+                        android:textSize="16sp"
+                        android:layout_marginStart="16dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
