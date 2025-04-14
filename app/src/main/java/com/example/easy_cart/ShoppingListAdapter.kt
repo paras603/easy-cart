@@ -220,6 +220,22 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
             Toast.makeText(holder.itemView.context, "Added to Favourite List", Toast.LENGTH_SHORT).show()
         }
 
+        // Set favorite icon initially
+        if (sList.favorite) {
+            holder.favButton.setImageResource(R.drawable.baseline_favorite_24) // Filled heart
+        } else {
+            holder.favButton.setImageResource(R.drawable.baseline_favorite_border_24) // Empty heart
+        }
+
+        holder.favButton.setOnClickListener {
+//            val updatedFavorite = !sList.favorite
+            db.moveToFavorite(sList.id.toInt())
+            refreshData(db.getAllLists())
+//            val message = if (updatedFavorite) "Added to Favourite List" else "Removed from Favourite List"
+            Toast.makeText(holder.itemView.context, "Added to Favourite List", Toast.LENGTH_SHORT).show()
+        }
+
+
 
     }
 

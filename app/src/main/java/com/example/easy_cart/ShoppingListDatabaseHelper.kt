@@ -160,7 +160,7 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
         val db = writableDatabase
         val values = ContentValues().apply {
             put("deleted", 1)
-            put("favorite", 0) // ✅ Also remove from favorites
+            put("favorite", 0)
         }
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(listId.toString())
