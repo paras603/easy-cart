@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.media.MediaScannerConnection
 import android.os.Environment
 import java.io.File
 import androidx.core.content.FileProvider
@@ -40,64 +41,113 @@ class ShoppingListAdapter(private var shoppingLists: List<ShoppingList>, private
         return ShoppingListViewHolder(view)
     }
 
-    fun exportToPDF () {
-
+    fun exportToPDF() {
         if (shoppingLists.isEmpty()) {
             Toast.makeText(context, "No shopping lists to export!", Toast.LENGTH_SHORT).show()
             return
         }
+
         val pdfDocument = PdfDocument()
         val paint = Paint()
-        val pageWidth = 595 // A4 size width in pixels
-        val pageHeight = 842 // A4 size height in pixels
+        val pageWidth = 595
+        val pageHeight = 842
 
-        val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
-        val page = pdfDocument.startPage(pageInfo)
-        val canvas = page.canvas
+        var pageNumber = 1
+        var pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+        var page = pdfDocument.startPage(pageInfo)
+        var canvas = page.canvas
 
-        var yPos = 50f
+        var yPos = 60f
+        val margin = 40f
 
-        paint.textSize = 18f
-        paint.isFakeBoldText = true
-        canvas.drawText("Shopping List", 200f, yPos, paint)
+        // Document title
+        paint.apply {
+            textAlign = Paint.Align.CENTER
+            textSize = 20f
+            isFakeBoldText = true
+        }
+        canvas.drawText("Shopping Lists", pageWidth / 2f, yPos, paint)
+        yPos += 20f
 
+        // Separator line
+        paint.strokeWidth = 2f
+        canvas.drawLine(margin, yPos, pageWidth - margin, yPos, paint)
+        yPos += 30f
+
+        // Reset paint for list content
+        paint.textAlign = Paint.Align.LEFT
         paint.textSize = 14f
         paint.isFakeBoldText = false
-        yPos += 40f
 
-        for (shoppingList in shoppingLists) {
-            if (yPos > pageHeight - 50) { // Start new page if space runs out
+        for ((index, shoppingList) in shoppingLists.withIndex()) {
+
+            // Start new page if needed
+            if (yPos > pageHeight - 100) {
                 pdfDocument.finishPage(page)
-                val newPageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
-                val newPage = pdfDocument.startPage(newPageInfo)
-                canvas.drawText("Shopping List (Continued)", 200f, 50f, paint)
-                yPos = 90f
+                pageNumber++
+                pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+                page = pdfDocument.startPage(pageInfo)
+                canvas = page.canvas
+                yPos = 60f
+
+                // Header for continuation page
+                paint.textAlign = Paint.Align.CENTER
+                paint.textSize = 18f
+                paint.isFakeBoldText = true
+                canvas.drawText("Shopping Lists (Continued)", pageWidth / 2f, yPos, paint)
+                yPos += 30f
+                paint.textAlign = Paint.Align.LEFT
+                paint.textSize = 14f
+                paint.isFakeBoldText = false
             }
-            canvas.drawText("• ${shoppingList.title}: ${shoppingList.content}", 50f, yPos, paint)
-            yPos += 30f
+
+            // List title
+            paint.isFakeBoldText = true
+            canvas.drawText("${index + 1}. ${shoppingList.title}", margin, yPos, paint)
+            yPos += 20f
+
+            // List content
+            paint.isFakeBoldText = false
+            val lines = shoppingList.content.split("\n")
+            for (line in lines) {
+                if (yPos > pageHeight - 60) {
+                    pdfDocument.finishPage(page)
+                    pageNumber++
+                    pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+                    page = pdfDocument.startPage(pageInfo)
+                    canvas = page.canvas
+                    yPos = 60f
+                }
+                canvas.drawText("   • $line", margin + 20f, yPos, paint)
+                yPos += 18f
+            }
+
+            yPos += 20f // Space between lists
         }
 
         pdfDocument.finishPage(page)
 
-        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "EasyCart")
-        if (!directory.exists()) {
-            directory.mkdirs()
-        }
+        // Save PDF
+        val directory = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "EasyCart")
+        if (!directory.exists()) directory.mkdirs()
 
         val file = File(directory, "ShoppingList.pdf")
         try {
-            val fos = FileOutputStream(file)
-            pdfDocument.writeTo(fos)
-            fos.close()
-            openPDF(file);
+            FileOutputStream(file).use { outputStream ->
+                pdfDocument.writeTo(outputStream)
+            }
+            MediaScannerConnection.scanFile(context, arrayOf(file.absolutePath), null, null)
+            openPDF(file)
             Toast.makeText(context, "PDF Exported: ${file.absolutePath}", Toast.LENGTH_LONG).show()
         } catch (e: IOException) {
             e.printStackTrace()
             Toast.makeText(context, "Error saving PDF", Toast.LENGTH_SHORT).show()
+        } finally {
+            pdfDocument.close()
         }
-
-        pdfDocument.close()
     }
+
+
 
     override fun getItemCount(): Int = shoppingLists.size
 
