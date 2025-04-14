@@ -69,7 +69,7 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
     fun getAllFavoriteList (): List<ShoppingList> {
         val shoppingList = mutableListOf<ShoppingList>()
         val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_NAME WHERE favorite = 1 & deleted = 0"
+        val query = "SELECT * FROM $TABLE_NAME WHERE favorite = 1 AND deleted = 0"
         val cursor = db.rawQuery(query, null)
 
         while (cursor.moveToNext()){
@@ -160,12 +160,15 @@ class ShoppingListDatabaseHelper(context: Context) : SQLiteOpenHelper(context, D
         val db = writableDatabase
         val values = ContentValues().apply {
             put("deleted", 1)
+            put("favorite", 0) // ✅ Also remove from favorites
         }
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(listId.toString())
-        db.update(TABLE_NAME,values, whereClause, whereArgs)
+        db.update(TABLE_NAME, values, whereClause, whereArgs)
         db.close()
     }
+
+
     fun moveToFavorite (listId: Int){
         val db = writableDatabase
         val values = ContentValues().apply {

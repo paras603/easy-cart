@@ -6,7 +6,7 @@ data class ShoppingList(
     val content: String,
     val shoppingDate: String,
     val deleted: Boolean,
-    val favorite: Boolean,
+    var favorite: Boolean,
     val priority: String,
     val isPurchased: Boolean
 )
