@@ -1,15 +1,26 @@
 package com.example.easy_cart
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import com.example.easy_cart.databinding.ActivityCreateShoppingListBinding
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class CreateShoppingListActivity : AppCompatActivity() {
@@ -69,6 +80,10 @@ class CreateShoppingListActivity : AppCompatActivity() {
             }
 
             val selectedPriority = findViewById<RadioButton>(selectedPriorityId).text.toString()
+
+            val shoppingDateInMillis = convertToMillis(shoppingDate)
+            scheduleReminder(shoppingDateInMillis)
+
             val isPurchased = alreadyPurchased.isChecked;
             val deleted = false
             val favorite = false
@@ -109,4 +124,44 @@ class CreateShoppingListActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun convertToMillis(dateString: String): Long {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = dateFormat.parse(dateString)
+        return date?.time ?: System.currentTimeMillis()
+    }
+
+    private fun scheduleReminder(shoppingDateInMillis: Long) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                Log.d("ShoppingReminderReceiver", "Notifications are not enabled.")
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                }
+                startActivity(intent)
+                return
+            }
+
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                startActivity(intent)
+                Log.d("CreateShoppingListActivity", "Exact alarm permission not granted.")
+                return
+            }
+        }
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, ShoppingReminderReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, shoppingDateInMillis, pendingIntent)
+        Log.d("CreateShoppingListActivity", "Alarm scheduled for $shoppingDateInMillis")
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        Log.d("CreateShoppingListActivity", "Scheduled reminder for: ${sdf.format(Date(shoppingDateInMillis))}")
+    }
+
 }
